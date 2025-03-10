@@ -1,0 +1,19 @@
+name: Kirim Notifikasi WA
+
+on:
+  push:
+    branches:
+      - main # Ganti sesuai branch utama repo lu
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Kirim Notifikasi ke WhatsApp
+        run: |
+          curl -X POST https://bot-lu-railway.app/send-commit \
+          -H "Content-Type: application/json" \
+          -d '{
+            "commitMsg": "${{ github.event.head_commit.message }}",
+            "time": "${{ github.event.head_commit.timestamp }}"
+          }'
