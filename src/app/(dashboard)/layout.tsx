@@ -96,7 +96,7 @@ const NAVIGATION: Navigation = [
 ];
 
 
-const demoTheme = createTheme({
+const Theme = createTheme({
     cssVariables: {
         colorSchemeSelector: 'data-toolpad-color-scheme',
     },
@@ -201,7 +201,7 @@ export default function DashboardLayoutSlots() {
         <AppProvider
             navigation={NAVIGATION}
             router={router}
-            theme={demoTheme}
+            theme={Theme}
         >
             <DashboardLayout
                 slots={{
