@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Typography from '@mui/material/Typography';
 
-const user = "Admin Klinik"
+const user = "Admin Klinik Setia Medika"
 
 export default function Dashboard() {
   return (
