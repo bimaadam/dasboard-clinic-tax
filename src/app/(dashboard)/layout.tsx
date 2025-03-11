@@ -18,13 +18,18 @@ import {
     type SidebarFooterProps,
 } from '@toolpad/core/DashboardLayout';
 import { useDemoRouter } from '@toolpad/core/internal';
-import { MedicalServices, ViewWeek } from '@mui/icons-material';
+import { AttachMoney, MedicalServices, ViewWeek } from '@mui/icons-material';
 import Dashboard from './page';
 import LaporanHarian from './LaporanHarian/page';
 import Box from '@mui/material/Box';
-import { Kumbh_Sans } from 'next/font/google';
+import PendapatanPage from './PendapatanKlinik/page';
+import ReceiptIcon from '@mui/icons-material/Receipt';
+import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
+import DescriptionIcon from '@mui/icons-material/Description';
+import AlarmOnIcon from '@mui/icons-material/AlarmOn';
+import PeopleIcon from '@mui/icons-material/People';
+import SettingsIcon from '@mui/icons-material/Settings';
 
-//menu navigasi
 const NAVIGATION: Navigation = [
     {
         kind: 'header',
@@ -40,7 +45,56 @@ const NAVIGATION: Navigation = [
         title: 'Laporan Harian',
         icon: <ViewWeek />,
     },
+    {
+        segment: 'PendapatanKlinik',
+        title: 'Pendapatan Klinik',
+        icon: <AttachMoney />,
+    },
+    {
+        kind: 'header',
+        title: 'Pelaporan Pajak',
+    },
+    {
+        segment: 'PajakPPh21',
+        title: 'PPh 21 (Gaji Karyawan)',
+        icon: <ReceiptIcon />,
+    },
+    {
+        segment: 'PajakPPh23',
+        title: 'PPh 23 (Jasa Dokter)',
+        icon: <AccountBalanceIcon />,
+    },
+    {
+        segment: 'PajakPPhBadan',
+        title: 'PPh Badan',
+        icon: <DescriptionIcon />,
+    },
+    {
+        segment: 'PPN',
+        title: 'PPN (Penjualan Obat)',
+        icon: <AccountBalanceIcon />,
+    },
+    {
+        segment: 'ReminderPajak',
+        title: 'Reminder Pajak',
+        icon: <AlarmOnIcon />,
+    },
+    {
+        kind: 'header',
+        title: 'Manajemen Klinik',
+    },
+    {
+        segment: 'ManajemenKaryawan',
+        title: 'Manajemen Karyawan',
+        icon: <PeopleIcon />,
+    },
+    {
+        segment: 'Pengaturan',
+        title: 'Pengaturan',
+        icon: <SettingsIcon />,
+    }
 ];
+
 
 const demoTheme = createTheme({
     cssVariables: {
@@ -72,6 +126,7 @@ function KontenHalaman({ pathname }: { pathname: string }) {
         >
             {pathname === '/dashboard' && <Dashboard />}
             {pathname === '/LaporanHarian' && <LaporanHarian />}
+            {pathname === '/PendapatanKlinik' && <PendapatanPage />}
         </Box>
     );
 }
@@ -138,29 +193,15 @@ function KostumJudul() {
     );
 }
 
-
-interface DemoProps {
-    /**
-     * Injected by the documentation to work in an iframe.
-     * Remove this when copying and pasting into your project.
-     */
-    window?: () => Window;
-}
-
-export default function DashboardLayoutSlots(props: DemoProps) {
-    const { window } = props;
+export default function DashboardLayoutSlots() {
 
     const router = useDemoRouter('/dashboard');
-
-    // Remove this const when copying and pasting into your project.
-    const demoWindow = window !== undefined ? window() : undefined;
 
     return (
         <AppProvider
             navigation={NAVIGATION}
             router={router}
             theme={demoTheme}
-            window={demoWindow}
         >
             <DashboardLayout
                 slots={{
