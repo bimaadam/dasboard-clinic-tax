@@ -18,22 +18,17 @@ import {
     type SidebarFooterProps,
 } from '@toolpad/core/DashboardLayout';
 import { useDemoRouter } from '@toolpad/core/internal';
-import { AttachMoney, MedicalServices, ViewWeek } from '@mui/icons-material';
+import { AccountBalanceWallet, AttachMoney, Description, MedicalServices, Receipt, ReceiptLong, ReceiptOutlined, Settings, ViewWeek } from '@mui/icons-material';
 import Dashboard from './page';
+import BarChartIcon from '@mui/icons-material/BarChart';
 import LaporanHarian from './LaporanHarian/page';
 import Box from '@mui/material/Box';
 import PendapatanPage from './PendapatanKlinik/page';
-import ReceiptIcon from '@mui/icons-material/Receipt';
-import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
-import DescriptionIcon from '@mui/icons-material/Description';
-import AlarmOnIcon from '@mui/icons-material/AlarmOn';
-import PeopleIcon from '@mui/icons-material/People';
-import SettingsIcon from '@mui/icons-material/Settings';
 
 const NAVIGATION: Navigation = [
     {
         kind: 'header',
-        title: 'Menu',
+        title: 'Menu Pajak & Keuangan',
     },
     {
         segment: 'dashboard',
@@ -41,57 +36,61 @@ const NAVIGATION: Navigation = [
         icon: <DashboardIcon />,
     },
     {
-        segment: 'LaporanHarian',
-        title: 'Laporan Harian',
-        icon: <ViewWeek />,
+        kind: 'header',
+        title: 'Laporan Keuangan',
     },
     {
-        segment: 'PendapatanKlinik',
-        title: 'Pendapatan Klinik',
-        icon: <AttachMoney />,
+        segment: 'laporan',
+        title: 'Laporan',
+        icon: <BarChartIcon />,
+        children: [
+            {
+                segment: 'laporan-harian',
+                title: 'Laporan Harian',
+                icon: <ViewWeek />,
+            },
+            {
+                segment: 'pendapatan-klinik',
+                title: 'Pendapatan Klinik',
+                icon: <AttachMoney />,
+            },
+            {
+                segment: 'penggajian',
+                title: 'Gaji Pegawai & Jasa Dokter',
+                icon: <AccountBalanceWallet />,
+            }
+        ],
     },
     {
         kind: 'header',
-        title: 'Pelaporan Pajak',
+        title: 'Laporan Pajak',
     },
     {
-        segment: 'PajakPPh21',
-        title: 'PPh 21 (Gaji Karyawan)',
-        icon: <ReceiptIcon />,
+        segment: 'laporan-pajak',
+        title: 'Laporan Pajak',
+        icon: <Receipt />,
+        children: [
+            {
+                segment: 'pph21',
+                title: 'PPh 21',
+                icon: <ReceiptLong />,
+            },
+            {
+                segment: 'pph23',
+                title: 'PPh 23',
+                icon: <Description />,
+            },
+            {
+                segment: 'ppn',
+                title: 'PPN',
+                icon: <ReceiptOutlined />,
+            }
+        ],
     },
     {
-        segment: 'PajakPPh23',
-        title: 'PPh 23 (Jasa Dokter)',
-        icon: <AccountBalanceIcon />,
-    },
-    {
-        segment: 'PajakPPhBadan',
-        title: 'PPh Badan',
-        icon: <DescriptionIcon />,
-    },
-    {
-        segment: 'PPN',
-        title: 'PPN (Penjualan Obat)',
-        icon: <AccountBalanceIcon />,
-    },
-    {
-        segment: 'ReminderPajak',
-        title: 'Reminder Pajak',
-        icon: <AlarmOnIcon />,
-    },
-    {
-        kind: 'header',
-        title: 'Manajemen Klinik',
-    },
-    {
-        segment: 'ManajemenKaryawan',
-        title: 'Manajemen Karyawan',
-        icon: <PeopleIcon />,
-    },
-    {
-        segment: 'Pengaturan',
-        title: 'Pengaturan',
-        icon: <SettingsIcon />,
+        segment: 'pengaturan',
+        title: 'Pengaturan Pajak',
+        icon: <Settings />,
     }
 ];
 
