@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Dashboard Laporan Pajak",
-  description: "Laporan Pajak admin dashboard by Bima Adam rin",
+  description: "Laporan Pajak dashboard by Bima Adam rin",
 };
 
 export default function RootLayout({
