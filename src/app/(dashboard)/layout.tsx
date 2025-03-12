@@ -24,6 +24,8 @@ import BarChartIcon from '@mui/icons-material/BarChart';
 import LaporanHarian from './LaporanHarian/page';
 import Box from '@mui/material/Box';
 import PendapatanPage from './PendapatanKlinik/page';
+import { useEffect, useState } from 'react';
+import { Button } from '@mui/material';
 
 const NAVIGATION: Navigation = [
     {
@@ -168,14 +170,64 @@ function ToolbarActionsSearch() {
     );
 }
 
+interface SidebarFooterProps {
+    mini: boolean;
+}
+
 function SidebarFooter({ mini }: SidebarFooterProps) {
+    const [session, setSession] = useState<{ email: string } | null>(null);
+
+    useEffect(() => {
+        async function getSession() {
+            const res = await fetch("/api/auth/session");
+            if (res.ok) {
+                const data = await res.json();
+                setSession(data);
+            }
+        }
+        getSession();
+    }, []);
+
+    const handleLogout = async () => {
+        await fetch("/api/auth/logout", { method: "POST" });
+        setSession(null);
+        window.location.href = "/auth/login"; // Redirect ke halaman login
+    };
+
     return (
-        <Typography
-            variant="caption"
-            sx={{ m: 1, whiteSpace: 'nowrap', overflow: 'hidden' }}
+        <Box
+            sx={{
+                p: 2,
+                textAlign: "center",
+                bgcolor: "background.paper",
+                borderTop: 1,
+                borderColor: "divider",
+            }}
         >
-            {mini ? '© MUI' : `© ${new Date().getFullYear()} Made with love By Bima Adam`}
-        </Typography>
+            {session ? (
+                <>
+                    <Typography variant="body2" color="textSecondary">
+                        Logged in as: <strong>{session.email}</strong>
+                    </Typography>
+                    <Button
+                        variant="contained"
+                        color="error"
+                        size="small"
+                        sx={{ mt: 1 }}
+                        onClick={handleLogout}
+                    >
+                        Logout
+                    </Button>
+                </>
+            ) : (
+                <Typography variant="body2" color="textSecondary">
+                    Not Logged In
+                </Typography>
+            )}
+            <Typography variant="caption" sx={{ mt: 1, display: "block" }}>
+                {mini ? "© MUI" : `© ${new Date().getFullYear()} Made with love By Bima Adam`}
+            </Typography>
+        </Box>
     );
 }
 
