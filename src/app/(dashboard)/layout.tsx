@@ -15,17 +15,18 @@ import { AppProvider, type Navigation } from '@toolpad/core/AppProvider';
 import {
     DashboardLayout,
     ThemeSwitcher,
-    type SidebarFooterProps,
 } from '@toolpad/core/DashboardLayout';
 import { useDemoRouter } from '@toolpad/core/internal';
 import { AccountBalanceWallet, AttachMoney, Description, MedicalServices, Receipt, ReceiptLong, ReceiptOutlined, Settings, ViewWeek } from '@mui/icons-material';
 import Dashboard from './page';
 import BarChartIcon from '@mui/icons-material/BarChart';
-import LaporanHarian from './LaporanHarian/page';
+import LaporanHarian from './(laporan)/laporan-harian/page';
 import Box from '@mui/material/Box';
 import PendapatanPage from './PendapatanKlinik/page';
 import { useEffect, useState } from 'react';
 import { Button } from '@mui/material';
+import { PageHeader } from '@toolpad/core/PageContainer';
+import Laporan from './(laporan)/layout';
 
 const NAVIGATION: Navigation = [
     {
@@ -126,7 +127,8 @@ function KontenHalaman({ pathname }: { pathname: string }) {
             }}
         >
             {pathname === '/dashboard' && <Dashboard />}
-            {pathname === '/LaporanHarian' && <LaporanHarian />}
+            {pathname === '/laporan' && <Laporan />}
+            {pathname === '/laporan/laporan-harian' && <LaporanHarian />}
             {pathname === '/PendapatanKlinik' && <PendapatanPage />}
         </Box>
     );
@@ -197,23 +199,42 @@ function SidebarFooter({ mini }: SidebarFooterProps) {
     return (
         <Box
             sx={{
-                p: 2,
+                p: 3,
                 textAlign: "center",
                 bgcolor: "background.paper",
                 borderTop: 1,
                 borderColor: "divider",
+                boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+                borderRadius: 2,
+                background: "linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)",
             }}
         >
             {session ? (
                 <>
-                    <Typography variant="body2" color="textSecondary">
-                        Logged in as: <strong>{session.email}</strong>
+                    <Typography
+                        variant="body2"
+                        color="textSecondary"
+                        sx={{ fontWeight: 500, mb: 1 }}
+                    >
+                        Login Sebagai:{" "}
+                        <strong style={{ color: "#1976d2" }}>{session.email}</strong>
                     </Typography>
                     <Button
                         variant="contained"
                         color="error"
                         size="small"
-                        sx={{ mt: 1 }}
+                        sx={{
+                            mt: 1,
+                            textTransform: "none",
+                            borderRadius: "8px",
+                            px: 2,
+                            py: 0.5,
+                            transition: "0.3s",
+                            "&:hover": {
+                                backgroundColor: "#d32f2f",
+                                transform: "scale(1.05)",
+                            },
+                        }}
                         onClick={handleLogout}
                     >
                         Logout
@@ -224,8 +245,16 @@ function SidebarFooter({ mini }: SidebarFooterProps) {
                     Not Logged In
                 </Typography>
             )}
-            <Typography variant="caption" sx={{ mt: 1, display: "block" }}>
-                {mini ? "© MUI" : `© ${new Date().getFullYear()} Made with love By Bima Adam`}
+            <Typography
+                variant="caption"
+                sx={{
+                    mt: 1,
+                    display: "block",
+                    fontStyle: "italic",
+                    color: "#555",
+                }}
+            >
+                {mini ? "© Bima" : `© ${new Date().getFullYear()} Made with love by Bima Adam`}
             </Typography>
         </Box>
     );
@@ -236,7 +265,7 @@ function KostumJudul() {
         <Stack direction="row" alignItems="center" spacing={2}>
             <MedicalServices fontSize="medium" color="primary" />
             <h6 className="hidden md:block">Klinik Setia Medika</h6>
-            <Chip size="small" label="Beta Release" color="info" />
+            <Chip size="small" label="Development" color="info" />
             <Tooltip title="Connected to production">
                 <CheckCircleIcon color="success" fontSize="small" />
             </Tooltip>
@@ -261,6 +290,9 @@ export default function DashboardLayoutSlots() {
                     sidebarFooter: SidebarFooter,
                 }}
             >
+                <div className='p-5'>
+                    <PageHeader />
+                </div>
                 <KontenHalaman pathname={router.pathname} />
             </DashboardLayout>
         </AppProvider>
