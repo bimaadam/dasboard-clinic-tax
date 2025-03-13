@@ -3,7 +3,7 @@
 import * as React from "react";
 import { AppProvider } from "@toolpad/core/AppProvider";
 import { SignInPage, type AuthProvider } from "@toolpad/core/SignInPage";
-import { createTheme, useTheme } from "@mui/material/styles";
+import { createTheme } from "@mui/material/styles";
 
 const Theme = createTheme({
   cssVariables: {
