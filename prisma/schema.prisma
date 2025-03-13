@@ -104,8 +104,8 @@ model PembayaranPajak {
 
 model Session {
   id        String   @id @default(uuid())
+  userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId    String   @unique
   token     String   @unique
   createdAt DateTime @default(now())
   expiresAt DateTime

@@ -22,6 +22,11 @@ export async function POST(req: NextRequest) {
 
   const token = randomUUID();
 
+  // **Hapus session lama sebelum buat yang baru**
+  await prisma.session.deleteMany({
+    where: { userId: user.id },
+  });
+
   await prisma.session.create({
     data: {
       userId: user.id,
