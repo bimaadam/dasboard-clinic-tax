@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -13,20 +7,123 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Dokter {
-  id        String    @id @default(uuid())
-  email     String    @unique
-  password  String
-  sessions  Session[] // Tambahin ini buat hubungan ke Session
+model User {
+  id            String          @id @default(uuid())
+  nama          String
+  email         String          @unique
+  password      String
+  role          Role            @default(STAFF) // Admin / Staff (pegawai perusahaan)
+  perusahaan    Perusahaan?     @relation(fields: [perusahaanId], references: [id])
+  perusahaanId  String?
+  createdAt     DateTime        @default(now())
+  laporanHarian LaporanHarian[]
+  pendapatan    Pendapatan[]
+  gajiPegawai   GajiPegawai[]
+  laporanPajak  LaporanPajak[]
+
+  Session Session[]
 }
 
+model Perusahaan {
+  id            String          @id @default(uuid())
+  nama          String
+  alamat        String
+  npwp          String          @unique // NPWP Perusahaan
+  users         User[]
+  laporanHarian LaporanHarian[]
+  pendapatan    Pendapatan[]
+  gajiPegawai   GajiPegawai[]
+  laporanPajak  LaporanPajak[]
+  createdAt     DateTime        @default(now())
+}
+
+model LaporanHarian {
+  id              String     @id @default(uuid())
+  perusahaan      Perusahaan @relation(fields: [perusahaanId], references: [id])
+  perusahaanId    String
+  tanggal         DateTime
+  totalPendapatan Float
+  totalGaji       Float
+  totalPajak      Float
+  createdAt       DateTime   @default(now())
+
+  User User[]
+}
+
+model Pendapatan {
+  id           String     @id @default(uuid())
+  perusahaan   Perusahaan @relation(fields: [perusahaanId], references: [id])
+  perusahaanId String
+  tanggal      DateTime
+  sumber       String // Contoh: Penjualan, Investasi, dll.
+  jumlah       Float
+  createdAt    DateTime   @default(now())
+
+  User User[]
+}
+
+model GajiPegawai {
+  id           String     @id @default(uuid())
+  perusahaan   Perusahaan @relation(fields: [perusahaanId], references: [id])
+  perusahaanId String
+  pegawai      String // Nama pegawai
+  jabatan      String // Jabatan karyawan
+  gajiPokok    Float
+  jasaBonus    Float // Bonus tambahan
+  totalGaji    Float
+  tanggal      DateTime
+  createdAt    DateTime   @default(now())
+
+  User User[]
+}
+
+model LaporanPajak {
+  id           String            @id @default(uuid())
+  perusahaan   Perusahaan        @relation(fields: [perusahaanId], references: [id])
+  perusahaanId String
+  tahun        Int
+  jenis        JenisPajak // PPH21, PPH23, PPN
+  jumlah       Float // Total pajak
+  status       StatusPajak       @default(PENDING)
+  dokumen      String? // Link bukti SPT
+  createdAt    DateTime          @default(now())
+  pembayaran   PembayaranPajak[]
+
+  User User[]
+}
+
+model PembayaranPajak {
+  id           String       @id @default(uuid())
+  laporan      LaporanPajak @relation(fields: [laporanId], references: [id])
+  laporanId    String
+  jumlah       Float
+  tanggalBayar DateTime
+  buktiBayar   String? // Link bukti bayar
+  createdAt    DateTime     @default(now())
+}
 
 model Session {
   id        String   @id @default(uuid())
-  token     String   @unique @default(uuid()) // Auto generate token
-  dokter    Dokter   @relation(fields: [dokterId], references: [id])
-  dokterId  String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String   @unique
+  token     String   @unique
   createdAt DateTime @default(now())
   expiresAt DateTime
 }
 
+enum Role {
+  ADMIN // Bisa lihat & edit semua data
+  STAFF // Bisa input data hanya untuk perusahaannya
+}
+
+enum JenisPajak {
+  PPH21
+  PPH23
+  PPN
+}
+
+enum StatusPajak {
+  PENDING
+  LUNAS
+  TERLAMBAT
+}

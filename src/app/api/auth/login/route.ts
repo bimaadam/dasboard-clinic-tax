@@ -9,30 +9,33 @@ export async function POST(req: NextRequest) {
   console.log("Email:", email);
   console.log("Password:", password);
 
-  const dokter = await prisma.dokter.findUnique({ where: { email } });
+  const user = await prisma.user.findUnique({ where: { email } });
 
-  console.log("Dokter dari DB:", dokter);
+  console.log("User dari DB:", user);
 
-  if (!dokter || dokter.password !== password) {
+  if (!user || user.password !== password) {
     return NextResponse.json(
       { error: "Email atau password salah" },
       { status: 401 }
     );
   }
 
-  const session = await prisma.session.create({
+  const token = randomUUID();
+
+  await prisma.session.create({
     data: {
-      dokterId: dokter.id,
-      token: randomUUID(),
+      userId: user.id,
+      token,
       createdAt: new Date(),
-      expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24),
+      expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24), // 1 hari
     },
   });
 
-  (await cookies()).set("session_token", session.token, {
+  (await cookies()).set("session_token", token, {
     httpOnly: true,
     path: "/",
+    maxAge: 60 * 60 * 24, // 1 hari
   });
 
-  return NextResponse.json({ message: "Login berhasil!" });
+  return NextResponse.json({ message: "Login berhasil!", token });
 }

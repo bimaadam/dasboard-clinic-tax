@@ -1,22 +1,24 @@
 import { NextRequest, NextResponse } from "next/server";
-import { cookies } from "next/headers";
 import { prisma } from "@/lib/prisma";
+import { cookies } from "next/headers";
 
 export async function GET(req: NextRequest) {
-  const token = (await cookies()).get("session_token")?.value;
+  const sessionToken = (await cookies()).get("session_token")?.value;
 
-  if (!token) {
-    return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+  if (!sessionToken) {
+    return NextResponse.json({ error: "No session found" }, { status: 401 });
   }
 
   const session = await prisma.session.findUnique({
-    where: { token },
-    include: { dokter: true },
+    where: { token: sessionToken },
+    include: { user: true }, // Pastikan nge-fetch user
   });
 
   if (!session) {
     return NextResponse.json({ error: "Invalid session" }, { status: 401 });
   }
 
-  return NextResponse.json({ email: session.dokter.email });
+  return NextResponse.json({
+    nama: session.user.nama, // Pastikan ini ada
+  });
 }
