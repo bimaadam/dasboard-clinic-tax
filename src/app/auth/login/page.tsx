@@ -61,8 +61,9 @@ export default function CredentialsSignInPage() {
         signIn={signIn}
         providers={providers}
         slotProps={{
-          emailField: { autoFocus: false },
+          emailField: { placeholder: "Masukan Email", autoFocus: false },
           form: { method: "POST", noValidate: true }, // Paksa pakai POST
+          passwordField: { placeholder: "Masukan Password" },
         }}
       />
     </AppProvider>

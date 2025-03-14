@@ -12,7 +12,7 @@ model User {
   nama          String
   email         String          @unique
   password      String
-  role          Role            @default(STAFF) // Admin / Staff (pegawai perusahaan)
+  role          Role            @default(STAFF) // Admin / Staff
   perusahaan    Perusahaan?     @relation(fields: [perusahaanId], references: [id])
   perusahaanId  String?
   createdAt     DateTime        @default(now())
@@ -20,15 +20,14 @@ model User {
   pendapatan    Pendapatan[]
   gajiPegawai   GajiPegawai[]
   laporanPajak  LaporanPajak[]
-
-  Session Session[]
+  Session       Session[]
 }
 
 model Perusahaan {
   id            String          @id @default(uuid())
   nama          String
   alamat        String
-  npwp          String          @unique // NPWP Perusahaan
+  npwp          String          @unique
   users         User[]
   laporanHarian LaporanHarian[]
   pendapatan    Pendapatan[]
@@ -51,13 +50,15 @@ model LaporanHarian {
 }
 
 model Pendapatan {
-  id           String     @id @default(uuid())
-  perusahaan   Perusahaan @relation(fields: [perusahaanId], references: [id])
+  id           String      @id @default(uuid())
+  perusahaan   Perusahaan  @relation(fields: [perusahaanId], references: [id])
   perusahaanId String
   tanggal      DateTime
-  sumber       String // Contoh: Penjualan, Investasi, dll.
+  sumber       String
   jumlah       Float
-  createdAt    DateTime   @default(now())
+  pajak        Float       @default(0)
+  jenisPajak   JenisPajak?
+  createdAt    DateTime    @default(now())
 
   User User[]
 }
@@ -66,15 +67,15 @@ model GajiPegawai {
   id           String     @id @default(uuid())
   perusahaan   Perusahaan @relation(fields: [perusahaanId], references: [id])
   perusahaanId String
-  pegawai      String // Nama pegawai
-  jabatan      String // Jabatan karyawan
+  pegawai      String
+  jabatan      String
   gajiPokok    Float
-  jasaBonus    Float // Bonus tambahan
+  jasaBonus    Float
   totalGaji    Float
   tanggal      DateTime
   createdAt    DateTime   @default(now())
-
-  User User[]
+  User         User?      @relation(fields: [userId], references: [id])
+  userId       String?
 }
 
 model LaporanPajak {
@@ -82,14 +83,14 @@ model LaporanPajak {
   perusahaan   Perusahaan        @relation(fields: [perusahaanId], references: [id])
   perusahaanId String
   tahun        Int
-  jenis        JenisPajak // PPH21, PPH23, PPN
-  jumlah       Float // Total pajak
+  jenis        JenisPajak
+  jumlah       Float
   status       StatusPajak       @default(PENDING)
-  dokumen      String? // Link bukti SPT
+  dokumen      String?
   createdAt    DateTime          @default(now())
   pembayaran   PembayaranPajak[]
-
-  User User[]
+  User         User?             @relation(fields: [userId], references: [id])
+  userId       String?
 }
 
 model PembayaranPajak {
@@ -98,7 +99,7 @@ model PembayaranPajak {
   laporanId    String
   jumlah       Float
   tanggalBayar DateTime
-  buktiBayar   String? // Link bukti bayar
+  buktiBayar   String?
   createdAt    DateTime     @default(now())
 }
 
@@ -112,8 +113,8 @@ model Session {
 }
 
 enum Role {
-  ADMIN // Bisa lihat & edit semua data
-  STAFF // Bisa input data hanya untuk perusahaannya
+  ADMIN
+  STAFF
 }
 
 enum JenisPajak {
