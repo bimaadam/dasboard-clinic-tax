@@ -1,3 +1,5 @@
+"use client";
+
 import * as React from "react";
 import { createTheme } from "@mui/material/styles";
 import PersonIcon from "@mui/icons-material/Person";
@@ -178,19 +180,17 @@ export default function CrudList(props: DemoProps) {
 
   return (
     <AppProvider router={router} theme={demoTheme} window={demoWindow}>
-      <PageContainer>
-        {/* preview-start */}
-        <List<Person>
-          dataSource={peopleDataSource}
-          dataSourceCache={peopleCache}
-          initialPageSize={4}
-          onRowClick={handleRowClick}
-          onCreateClick={handleCreateClick}
-          onEditClick={handleEditClick}
-          onDelete={handleDelete}
-        />
-        {/* preview-end */}
-      </PageContainer>
+      {/* preview-start */}
+      <List<Person>
+        dataSource={peopleDataSource}
+        dataSourceCache={peopleCache}
+        initialPageSize={4}
+        onRowClick={handleRowClick}
+        onCreateClick={handleCreateClick}
+        onEditClick={handleEditClick}
+        onDelete={handleDelete}
+      />
+      {/* preview-end */}
     </AppProvider>
   );
 }
