@@ -2,16 +2,8 @@
 
 import * as React from "react";
 import { createTheme } from "@mui/material/styles";
-import PersonIcon from "@mui/icons-material/Person";
 import { AppProvider, type Navigation } from "@toolpad/core/AppProvider";
-import { DashboardLayout } from "@toolpad/core/DashboardLayout";
-import { PageContainer } from "@toolpad/core/PageContainer";
-import {
-  DataModel,
-  DataSource,
-  DataSourceCache,
-  List,
-} from "@toolpad/core/Crud";
+import { List } from "@toolpad/core/Crud";
 import { useDemoRouter } from "@toolpad/core/internal";
 
 const demoTheme = createTheme({
@@ -30,167 +22,87 @@ const demoTheme = createTheme({
   },
 });
 
-export interface Person extends DataModel {
-  id: number;
-  firstName: string;
-  lastName: string;
-  age: number;
+export interface LaporanHarian {
+  id: string;
+  nama: string;
+  alamat: string;
+  nik: string;
+  keluhan: string;
+  dpjp: string;
+  jeniskelamin: string;
+  tanggalLahir: string;
+  jenisPembayaran: string;
+  tinggiBadan: number;
+  beratBadan: number;
+  sistole: number;
+  diastole: number;
+  lingkarPerut: number;
+  imt: number;
+  respiratoryRate: number;
+  heartRate: number;
+  saturasiOksigen: number;
+  suhu: number;
+  lingkarKepala: number;
+  biayaLayanan: number;
+  createdAt: string;
 }
 
-let people: Person[] = [
-  { id: 1, lastName: "Snow", firstName: "Bima", age: 14 },
-  { id: 2, lastName: "Setiawati", firstName: "Ririn", age: 31 },
-  { id: 3, lastName: "Lannister", firstName: "Jaime", age: 31 },
-  { id: 4, lastName: "Stark", firstName: "Arya", age: 11 },
-  { id: 5, lastName: "Clifford", firstName: "Ferrara", age: 44 },
-  { id: 6, lastName: "Frances", firstName: "Rossini", age: 36 },
-  { id: 7, lastName: "Roxie", firstName: "Harvey", age: 65 },
+let laporanHarianData: LaporanHarian[] = [
+  {
+    id: "1",
+    nama: "Bima Adam",
+    alamat: "Boyolali",
+    nik: "1234567890",
+    keluhan: "Demam",
+    dpjp: "Dr. Arie",
+    jeniskelamin: "Laki-laki",
+    tanggalLahir: "2002-10-01",
+    jenisPembayaran: "BPJS",
+    tinggiBadan: 170,
+    beratBadan: 65,
+    sistole: 120,
+    diastole: 80,
+    lingkarPerut: 85,
+    imt: 22.5,
+    respiratoryRate: 16,
+    heartRate: 75,
+    saturasiOksigen: 98,
+    suhu: 36.5,
+    lingkarKepala: 55,
+    biayaLayanan: 150000,
+    createdAt: "2025-03-15",
+  },
 ];
 
-export const peopleDataSource: DataSource<Person> &
-  Required<Pick<DataSource<Person>, "getMany">> = {
-  fields: [
-    { field: "id", headerName: "ID" },
-    {
-      field: "firstName",
-      headerName: "Nama Depan",
-    },
-    {
-      field: "lastName",
-      headerName: "Nama Belakang",
-    },
-    {
-      field: "age",
-      headerName: "Umur",
-      type: "number",
-    },
-  ],
-  getMany: ({ paginationModel, filterModel, sortModel }) => {
-    return new Promise<{ items: Person[]; itemCount: number }>((resolve) => {
-      setTimeout(() => {
-        let processedPeople = [...people];
-
-        // Apply filters (demo only)
-        if (filterModel?.items?.length) {
-          filterModel.items.forEach(({ field, value, operator }) => {
-            if (!field || value == null) {
-              return;
-            }
-
-            processedPeople = processedPeople.filter((person) => {
-              const personValue = person[field];
-
-              switch (operator) {
-                case "contains":
-                  return String(personValue)
-                    .toLowerCase()
-                    .includes(String(value).toLowerCase());
-                case "equals":
-                  return personValue === value;
-                case "startsWith":
-                  return String(personValue)
-                    .toLowerCase()
-                    .startsWith(String(value).toLowerCase());
-                case "endsWith":
-                  return String(personValue)
-                    .toLowerCase()
-                    .endsWith(String(value).toLowerCase());
-                case ">":
-                  return (personValue as number) > value;
-                case "<":
-                  return (personValue as number) < value;
-                default:
-                  return true;
-              }
-            });
+export const laporanHarianDataSource = {
+  fields: Object.keys(laporanHarianData[0]).map((key) => ({
+    field: key,
+    headerName: key.replace(/([A-Z])/g, " $1").trim(),
+  })),
+  getMany: ({ paginationModel }) => {
+    return new Promise<{ items: LaporanHarian[]; itemCount: number }>(
+      (resolve) => {
+        setTimeout(() => {
+          const start = paginationModel.page * paginationModel.pageSize;
+          const end = start + paginationModel.pageSize;
+          resolve({
+            items: laporanHarianData.slice(start, end),
+            itemCount: laporanHarianData.length,
           });
-        }
-
-        // Apply sorting
-        if (sortModel?.length) {
-          processedPeople.sort((a, b) => {
-            for (const { field, sort } of sortModel) {
-              if ((a[field] as number) < (b[field] as number)) {
-                return sort === "asc" ? -1 : 1;
-              }
-              if ((a[field] as number) > (b[field] as number)) {
-                return sort === "asc" ? 1 : -1;
-              }
-            }
-            return 0;
-          });
-        }
-
-        // Apply pagination
-        const start = paginationModel.page * paginationModel.pageSize;
-        const end = start + paginationModel.pageSize;
-        const paginatedPeople = processedPeople.slice(start, end);
-
-        resolve({
-          items: paginatedPeople,
-          itemCount: processedPeople.length,
-        });
-      }, 750);
-    });
-  },
-  deleteOne: (personId) => {
-    return new Promise<void>((resolve) => {
-      setTimeout(() => {
-        people = people.filter((person) => person.id !== Number(personId));
-
-        resolve();
-      }, 750);
-    });
+        }, 750);
+      }
+    );
   },
 };
 
-const peopleCache = new DataSourceCache();
-
-interface DemoProps {
-  /**
-   * Injected by the documentation to work in an iframe.
-   * Remove this when copying and pasting into your project.
-   */
-  window?: () => Window;
-}
-
-export default function CrudList(props: DemoProps) {
-  const { window } = props;
-
-  const router = useDemoRouter("/people");
-
-  // Remove this const when copying and pasting into your project.
-  const demoWindow = window !== undefined ? window() : undefined;
-
-  const handleRowClick = React.useCallback((personId: string | number) => {
-    console.log(`Row click with id ${personId}`);
-  }, []);
-
-  const handleCreateClick = React.useCallback(() => {
-    console.log("Create click");
-  }, []);
-
-  const handleEditClick = React.useCallback((personId: string | number) => {
-    console.log(`Edit click with id ${personId}`);
-  }, []);
-
-  const handleDelete = React.useCallback((personId: string | number) => {
-    console.log(`Person with id ${personId} deleted`);
-  }, []);
-
+export default function LaporanHarianPage() {
+  const router = useDemoRouter("/laporan-harian");
   return (
-    <AppProvider router={router} theme={demoTheme} window={demoWindow}>
-      {/* preview-start */}
-      <List<Person>
-        dataSource={peopleDataSource}
-        dataSourceCache={peopleCache}
-        initialPageSize={4}
-        onRowClick={handleRowClick}
-        onCreateClick={handleCreateClick}
-        onEditClick={handleEditClick}
-        onDelete={handleDelete}
+    <AppProvider router={router} theme={demoTheme}>
+      <List<LaporanHarian>
+        dataSource={laporanHarianDataSource}
+        initialPageSize={5}
       />
-      {/* preview-end */}
     </AppProvider>
   );
 }
