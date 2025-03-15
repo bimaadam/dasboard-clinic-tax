@@ -24,16 +24,17 @@ model User {
 }
 
 model Perusahaan {
-  id            String          @id @default(uuid())
-  nama          String
-  alamat        String
-  npwp          String          @unique
-  users         User[]
-  laporanHarian LaporanHarian[]
-  pendapatan    Pendapatan[]
-  gajiPegawai   GajiPegawai[]
-  laporanPajak  LaporanPajak[]
-  createdAt     DateTime        @default(now())
+  id              String            @id @default(uuid())
+  nama            String
+  alamat          String
+  npwp            String            @unique
+  users           User[]
+  laporanHarian   LaporanHarian[]
+  pendapatan      Pendapatan[]
+  gajiPegawai     GajiPegawai[]
+  laporanPajak    LaporanPajak[]
+  createdAt       DateTime          @default(now())
+  LaporanKeuangan LaporanKeuangan[]
 }
 
 model LaporanHarian {
@@ -45,8 +46,36 @@ model LaporanHarian {
   totalGaji       Float
   totalPajak      Float
   createdAt       DateTime   @default(now())
+  pasien          Pasien[]
+  User            User       @relation(fields: [userId], references: [id])
+  userId          String
+}
 
-  User User[]
+model Pasien {
+  id              String          @id @default(uuid())
+  laporanHarian   LaporanHarian   @relation(fields: [laporanHarianId], references: [id])
+  laporanHarianId String
+  nama            String
+  alamat          String
+  nik             String          @unique
+  keluhan         String
+  dpjp            String
+  jeniskelamin    String
+  tanggalLahir    DateTime
+  jenisPembayaran JenisPembayaran
+  tinggiBadan     Float
+  beratBadan      Float
+  sistole         Int
+  diastole        Int
+  lingkarPerut    Float
+  imt             Float
+  respiratoryRate Int
+  heartRate       Int
+  saturasiOksigen Int
+  suhu            Float
+  lingkarKepala   Float
+  biayaLayanan    Float
+  createdAt       DateTime        @default(now())
 }
 
 model Pendapatan {
@@ -74,8 +103,22 @@ model GajiPegawai {
   totalGaji    Float
   tanggal      DateTime
   createdAt    DateTime   @default(now())
-  User         User?      @relation(fields: [userId], references: [id])
-  userId       String?
+  User         User       @relation(fields: [userId], references: [id])
+  userId       String
+}
+
+model LaporanKeuangan {
+  id              String     @id @default(uuid())
+  perusahaan      Perusahaan @relation(fields: [perusahaanId], references: [id])
+  perusahaanId    String
+  tahun           Int
+  totalPendapatan Float
+  totalGaji       Float
+  totalPajak      Float
+  createdAt       DateTime   @default(now())
+
+  laporanPajak   LaporanPajak? @relation(fields: [laporanPajakId], references: [id]) // Relasi 1-1
+  laporanPajakId String?       @unique
 }
 
 model LaporanPajak {
@@ -89,8 +132,10 @@ model LaporanPajak {
   dokumen      String?
   createdAt    DateTime          @default(now())
   pembayaran   PembayaranPajak[]
-  User         User?             @relation(fields: [userId], references: [id])
-  userId       String?
+  User         User              @relation(fields: [userId], references: [id])
+  userId       String
+
+  laporanKeuangan LaporanKeuangan?
 }
 
 model PembayaranPajak {
@@ -127,4 +172,12 @@ enum StatusPajak {
   PENDING
   LUNAS
   TERLAMBAT
+}
+
+enum JenisPembayaran {
+  BPJS
+  YATIM
+  UMUM
+  ADMIN
+  ASURANSI
 }
