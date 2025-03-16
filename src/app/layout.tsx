@@ -1,6 +1,6 @@
-import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { type Metadata } from "next";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -12,38 +12,23 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  title: "Dashboard Laporan Pajak",
-  description: "Laporan Pajak dashboard by Bima Adam rin",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  return {
+    title: "Klinik Setia Medika",
+    description: "Laporan Pajak Dashboard by Bima Adam",
+  };
+}
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+    <html lang="id">
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         {children}
       </body>
     </html>
   );
 }
-
-// import { NextAppProvider } from '@toolpad/core/nextjs';
-// import LinearProgress from '@mui/material/LinearProgress';
-// import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
-
-// export default function RootLayout({ children }: { children: React.ReactNode }) {
-//   return (
-//     <AppRouterCacheProvider options={{ enableCssLayer: true }}>
-//       <React.Suspense fallback={<LinearProgress />}>
-//         <NextAppProvider navigation={NAVIGATION} branding={BRANDING}>
-//           {children}
-//         </NextAppProvider>
-//       </React.Suspense>
-//     </AppRouterCacheProvider>
-//   );
-// }
