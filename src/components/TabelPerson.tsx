@@ -23,54 +23,48 @@ const demoTheme = createTheme({
 });
 
 export interface LaporanHarian {
-  id: string;
-  nama: string;
-  alamat: string;
-  nik: string;
-  keluhan: string;
-  dpjp: string;
-  jeniskelamin: string;
-  tanggalLahir: string;
-  jenisPembayaran: string;
-  tinggiBadan: number;
-  beratBadan: number;
-  sistole: number;
-  diastole: number;
-  lingkarPerut: number;
-  imt: number;
-  respiratoryRate: number;
-  heartRate: number;
-  saturasiOksigen: number;
-  suhu: number;
-  lingkarKepala: number;
-  biayaLayanan: number;
-  createdAt: string;
+  id: number;
+  noResep?: string;
+  keterangan?: string;
+  jasa: number;
+  obat: number;
+  lainLain?: number;
+  tindakan?: number;
+  lab?: number;
+  nebu?: number;
+  jumlah: number;
+  diskon?: number;
+  totalAkhir: number;
+  adm2000?: number;
+  adm3000?: number;
 }
 
-let laporanHarianData: LaporanHarian[] = [
+const laporanData: LaporanHarian[] = [
   {
-    id: "1",
-    nama: "Bima Adam",
-    alamat: "Boyolali",
-    nik: "1234567890",
-    keluhan: "Demam",
-    dpjp: "Dr. Arie",
-    jeniskelamin: "Laki-laki",
-    tanggalLahir: "2002-10-01",
-    jenisPembayaran: "BPJS",
-    tinggiBadan: 170,
-    beratBadan: 65,
-    sistole: 120,
-    diastole: 80,
-    lingkarPerut: 85,
-    imt: 22.5,
-    respiratoryRate: 16,
-    heartRate: 75,
-    saturasiOksigen: 98,
-    suhu: 36.5,
-    lingkarKepala: 55,
-    biayaLayanan: 150000,
-    createdAt: "2025-03-15",
+    id: 1,
+    jasa: 40000,
+    obat: 25000,
+    jumlah: 65000,
+    totalAkhir: 70000,
+  },
+  {
+    id: 2,
+    jasa: 40000,
+    obat: 30000,
+    nebu: 50000,
+    jumlah: 120000,
+    totalAkhir: 125000,
+  },
+  {
+    id: 5,
+    noResep: "A Asep",
+    keterangan: "hecting 14",
+    jasa: 40000,
+    obat: 25000,
+    lainLain: 60000,
+    tindakan: 295000,
+    jumlah: 420000,
+    totalAkhir: 425000,
   },
 ];
 
