@@ -39,7 +39,7 @@ export interface LaporanHarian {
   adm3000?: number;
 }
 
-let laporanData: LaporanHarian[] = [
+let laporanHarianData: LaporanHarian[] = [
   {
     id: 1,
     jasa: 40000,
