@@ -1,102 +1,59 @@
 "use client";
 
-import * as React from "react";
-import { createTheme } from "@mui/material/styles";
-import { AppProvider, type Navigation } from "@toolpad/core/AppProvider";
-import { List } from "@toolpad/core/Crud";
-import { useDemoRouter } from "@toolpad/core/internal";
+import React, { useEffect, useState } from "react";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from "@mui/material";
 
-const demoTheme = createTheme({
-  cssVariables: {
-    colorSchemeSelector: "data-toolpad-color-scheme",
-  },
-  colorSchemes: { light: true, dark: true },
-  breakpoints: {
-    values: {
-      xs: 0,
-      sm: 600,
-      md: 600,
-      lg: 1200,
-      xl: 1536,
-    },
-  },
-});
+const theme = createTheme();
 
-export interface LaporanHarian {
-  id: number;
-  noResep?: string;
-  keterangan?: string;
-  jasa: number;
-  obat: number;
-  lainLain?: number;
-  tindakan?: number;
-  lab?: number;
-  nebu?: number;
-  jumlah: number;
-  diskon?: number;
-  totalAkhir: number;
-  adm2000?: number;
-  adm3000?: number;
-}
-
-let laporanHarianData: LaporanHarian[] = [
-  {
-    id: 1,
-    jasa: 40000,
-    obat: 25000,
-    jumlah: 65000,
-    totalAkhir: 70000,
-  },
-  {
-    id: 2,
-    jasa: 40000,
-    obat: 30000,
-    nebu: 50000,
-    jumlah: 120000,
-    totalAkhir: 125000,
-  },
-  {
-    id: 5,
-    noResep: "A Asep",
-    keterangan: "hecting 14",
-    jasa: 40000,
-    obat: 25000,
-    lainLain: 60000,
-    tindakan: 295000,
-    jumlah: 420000,
-    totalAkhir: 425000,
-  },
-];
-
-export const laporanHarianDataSource = {
-  fields: Object.keys(laporanHarianData[0]).map((key) => ({
-    field: key,
-    headerName: key.replace(/([A-Z])/g, " $1").trim(),
-  })),
-  getMany: ({ paginationModel }) => {
-    return new Promise<{ items: LaporanHarian[]; itemCount: number }>(
-      (resolve) => {
-        setTimeout(() => {
-          const start = paginationModel.page * paginationModel.pageSize;
-          const end = start + paginationModel.pageSize;
-          resolve({
-            items: laporanHarianData.slice(start, end),
-            itemCount: laporanHarianData.length,
-          });
-        }, 750);
-      }
-    );
-  },
+const fetchLaporanHarian = async () => {
+  try {
+    const res = await fetch("/api/laporan-harian");
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    return [];
+  }
 };
 
 export default function LaporanHarianPage() {
-  const router = useDemoRouter("/laporan-harian");
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    fetchLaporanHarian().then(setData);
+  }, []);
+
   return (
-    <AppProvider router={router} theme={demoTheme}>
-      <List<LaporanHarian>
-        dataSource={laporanHarianDataSource}
-        initialPageSize={5}
-      />
-    </AppProvider>
+    <ThemeProvider theme={theme}>
+      <TableContainer component={Paper} sx={{ mt: 4, maxWidth: "90%", mx: "auto" }}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>ID</TableCell>
+              <TableCell>Tanggal</TableCell>
+              <TableCell>Nomor Resep</TableCell>
+              <TableCell>Nama Pasien</TableCell>
+              <TableCell>Dokter</TableCell>
+              <TableCell>Asisten</TableCell>
+              <TableCell>Total</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {data.map((row, index) => (
+              <TableRow key={index}>
+                <TableCell>{row.id}</TableCell>
+                <TableCell>{new Date(row.tanggal).toLocaleDateString("id-ID")}</TableCell>
+                <TableCell>{row.nomor_resep}</TableCell>
+                <TableCell>{row.nama_pasien}</TableCell>
+                <TableCell>{row.dokter}</TableCell>
+                <TableCell>{row.asisten}</TableCell>
+                <TableCell>{row.total.toLocaleString("id-ID", { style: "currency", currency: "IDR" })}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </ThemeProvider>
   );
 }
