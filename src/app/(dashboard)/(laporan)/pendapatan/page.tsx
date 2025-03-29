@@ -1,3 +1,4 @@
+import CrudLaporan from "@/components/DemoTable";
 import {
   Box,
   Typography,
@@ -55,37 +56,40 @@ const akunItems = [
 
 export default function AkunListPage() {
   return (
-    <Box sx={{ p: 0 }}>
-      {/* <Typography variant="h4" gutterBottom>
+    <>
+      <Box sx={{ p: 0 }}>
+        {/* <Typography variant="h4" gutterBottom>
         Daftar Akun
       </Typography> */}
-      <TableContainer component={Paper}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Kode Akun</TableCell>
-              <TableCell>Nama Akun</TableCell>
-              <TableCell>Tipe</TableCell>
-              <TableCell>Saldo</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {akunItems.map((akun, index) => (
-              <TableRow key={index}>
-                <TableCell>{akun.kode}</TableCell>
-                <TableCell>{akun.nama}</TableCell>
-                <TableCell>{akun.tipe}</TableCell>
-                <TableCell>
-                  {akun.saldo.toLocaleString("id-ID", {
-                    style: "currency",
-                    currency: "IDR",
-                  })}
-                </TableCell>
+        <TableContainer component={Paper}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Kode Akun</TableCell>
+                <TableCell>Nama Akun</TableCell>
+                <TableCell>Tipe</TableCell>
+                <TableCell>Saldo</TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-    </Box>
+            </TableHead>
+            <TableBody>
+              {akunItems.map((akun, index) => (
+                <TableRow key={index}>
+                  <TableCell>{akun.kode}</TableCell>
+                  <TableCell>{akun.nama}</TableCell>
+                  <TableCell>{akun.tipe}</TableCell>
+                  <TableCell>
+                    {akun.saldo.toLocaleString("id-ID", {
+                      style: "currency",
+                      currency: "IDR",
+                    })}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Box>
+      <CrudLaporan />
+    </>
   );
 }
