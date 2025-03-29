@@ -1,3 +1,5 @@
+"use client"
+
 import CrudLaporan from "@/components/DemoTable";
 import {
   Box,
