@@ -90,9 +90,15 @@ func GetLaporan(w http.ResponseWriter, r *http.Request) {
 		laporanList = append(laporanList, laporan)
 	}
 
+	// **Jangan return null, harus return array kosong**
+	if laporanList == nil {
+		laporanList = []Laporan{}
+	}
+
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(laporanList)
 }
+
 
 // UPDATE - Update Laporan
 func UpdateLaporan(w http.ResponseWriter, r *http.Request) {
@@ -144,3 +150,4 @@ func HapusLaporan(w http.ResponseWriter, r *http.Request) {
 
 	json.NewEncoder(w).Encode(map[string]string{"message": "Laporan dihapus!"})
 }
+

@@ -5,7 +5,7 @@ import (
 )
 
 func RunMigrations() {
-	query := `
+	queryLaporan := `
 	CREATE TABLE IF NOT EXISTS laporan_harian (
 	    id SERIAL PRIMARY KEY,
 	    tanggal DATE NOT NULL,
@@ -22,10 +22,38 @@ func RunMigrations() {
 		total DECIMAL(10,2) DEFAULT 0
 	);
 	`
-	_, err := DB.Exec(query)
-	if err != nil {
-		fmt.Println("Error running migrations:", err)
+
+	queryPenggajian := `
+	CREATE TABLE IF NOT EXISTS penggajian (
+	id SERIAL PRIMARY KEY,
+	nama VARCHAR(100) NOT NULL,
+	jabatan VARCHAR(100) NOT NULL,
+	gaji_pokok INTEGER DEFAULT 0,
+	tindakan INTEGER DEFAULT 0,
+	periksa INTEGER DEFAULT 0,
+	inj INTEGER DEFAULT 0,
+	ekg INTEGER DEFAULT 0,
+	infus INTEGER DEFAULT 0,
+	nebu INTEGER DEFAULT 0,
+	total INTEGER DEFAULT 0,
+	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+	`
+
+	_, err1 := DB.Exec(queryLaporan)
+	_, err2 := DB.Exec(queryPenggajian)
+
+	if err1 != nil || err2 != nil {
+		fmt.Println("Error running migrations:")
+		if err1 != nil {
+			fmt.Println("- Laporan Harian:", err1)
+		}
+		if err2 != nil {
+			fmt.Println("- Penggajian:", err2)
+		}
 		return
 	}
-	fmt.Println("Migrations completed!")
+
+	fmt.Println("All migrations completed!")
 }
