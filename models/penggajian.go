@@ -14,6 +14,7 @@ type Penggajian struct {
 	Infus     int       `json:"infus"`
 	Nebu      int       `json:"nebu"`
 	Total     int       `json:"total"`
-	CreatedAt time.Time `json:"created_at"`
+	CreatedAt time.Time `json:"created_at" gorm:"autoCreateTime"`
+	UpdatedAt time.Time `json:"updated_at" gorm:"autoUpdateTime"`
 }
 
